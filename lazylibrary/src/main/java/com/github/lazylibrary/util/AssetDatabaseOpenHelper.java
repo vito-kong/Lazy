@@ -10,6 +10,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import java.io.InputStreamReader;
 
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
+
 /**
  * AssetDatabaseOpenHelper
  * <ul>
@@ -105,4 +110,33 @@ public class AssetDatabaseOpenHelper {
         }
         return null;
     }
+	
+	/**
+	 * 根据包名获取AssetManager
+	 * kth add 20160329
+	 * 
+	 * @param mContext
+	 * @param packageName
+	 *            对应包名
+	 * @return
+	 */
+	public static AssetManager getAssetManager(Context mContext, String packageName) {
+		Resources res = null;
+		try {
+			PackageManager pm = getPackageManager(mContext);
+			res = pm.getResourcesForApplication(packageName);
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+			Log.i(TAG, "Get resources for application failed.\n");
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return res.getAssets();
+	}
+
+	public static PackageManager getPackageManager(Context mContext) {
+		return mContext.getPackageManager();
+	}
+
 }
